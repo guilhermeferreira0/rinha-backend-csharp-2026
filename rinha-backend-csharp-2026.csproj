@@ -6,6 +6,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>rinha_backend_csharp_2026</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+	<PublishAot>true</PublishAot>
+	<SelfContained>true</SelfContained>
+	<RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>
+	<InvariantGlobalization>true</InvariantGlobalization>
+	<PublishTrimmed>true</PublishTrimmed>
+	<OptimizationPreference>Speed</OptimizationPreference>
   </PropertyGroup>
 
+	<ItemGroup>
+		<None Update="resources/references.json.gz">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
 </Project>

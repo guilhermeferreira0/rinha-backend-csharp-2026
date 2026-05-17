@@ -1,25 +1,31 @@
 ﻿using rinha_backend_csharp_2026.transactions.models;
+using System.Collections.Frozen;
 using System.IO.Compression;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace rinha_backend_csharp_2026.transactions.services.Dataset
 {
     public class DatasetLoader
     {
-        public DatasetStore Load(string path)
+        private const int MAX_JSON_DATA = 3_000_000;
+
+        public async Task<DatasetStore> LoadReference(string path)
         {
             using var file = File.OpenRead(path);
             using var gzip = new GZipStream(file, CompressionMode.Decompress);
 
-            var items = JsonSerializer.Deserialize<List<ReferenceDatasetItem>>(gzip) 
-                ?? throw new InvalidOperationException("Failed to load references dataset.");
+            var vectors = new Vector14[MAX_JSON_DATA];
+            var labels = new byte[MAX_JSON_DATA];
 
-            var vectors = new Vector14[items.Count];
-            var labels = new byte[items.Count];
-
-            for (var i = 0; i < items.Count; i++)
+            var i = 0;
+            await foreach (var item in JsonSerializer.DeserializeAsyncEnumerable(
+                gzip,
+                AppJsonSerializerContext.Default.ReferenceDatasetItem
+            ))
             {
-                var item = items[i];
+                if (item is null)
+                    continue;
 
                 vectors[i] = new Vector14
                 {
@@ -40,9 +46,24 @@ namespace rinha_backend_csharp_2026.transactions.services.Dataset
                 };
 
                 labels[i] = item.Label == "fraud" ? (byte)1 : (byte)0;
-            }
+                i++;
+            };
 
             return new DatasetStore(vectors, labels);
+        }
+
+        public MccRiskTable LoadMccRisk(string path)
+        {
+            using var fs = File.OpenRead(path);
+            using var doc = JsonDocument.Parse(fs);
+
+            var dict = new Dictionary<string, float>();
+            foreach (var prop in doc.RootElement.EnumerateObject())
+            {
+                dict[prop.Name] = prop.Value.GetSingle();
+            }
+
+            return new MccRiskTable(dict.ToFrozenDictionary());
         }
     }
 }

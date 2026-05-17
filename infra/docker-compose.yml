@@ -1,0 +1,29 @@
+x-service-templates:
+  transaction-processor: &transaction-processor
+    build: 
+      context: ../
+      dockerfile: infra/Dockerfile
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 2s
+        max_attempts: 10
+        window: 5s
+      resources:
+        limits:
+          cpus: "0.45"
+          memory: "405MB" # recommend: 165MB
+
+services:
+  transaction-processor-1:
+    <<: *transaction-processor
+    container_name: transaction-processor-1
+    ports:
+      - 9999:8080
+
+  # transaction-processor-2:
+  #   <<: *transaction-processor
+  #   container_name: transaction-processor-2
+  #   ports:
+  #     - 9999:8080
+
