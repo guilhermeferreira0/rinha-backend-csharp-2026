@@ -2,17 +2,18 @@
 {
     public class DatasetStore
     {
-        public DatasetStore(Vector14[] vectors, byte[] labels)
+        public DatasetStore(Vector14[] vectors, byte[] labels, int length)
         {
             if (vectors.Length != labels.Length)
                 throw new ArgumentException("Vectors and labels length mismatch.");
 
             Vectors = vectors;
             Labels = labels;
+            Count = length;
         }
 
         public Vector14[] Vectors { get; }
         public byte[] Labels { get; }
-        public int Count => Vectors.Length;
+        public int Count { get; }
     }
 }

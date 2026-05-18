@@ -63,4 +63,10 @@ namespace rinha_backend_csharp_2026.transactions.models
         [JsonPropertyName("km_from_current")]
         public float KmFromCurrent { get; set; }
     }
+
+    public class TransactionResponse
+    {
+        public bool Approved { get; init; }
+        public float FraudScore { get; init; }
+    }
 }

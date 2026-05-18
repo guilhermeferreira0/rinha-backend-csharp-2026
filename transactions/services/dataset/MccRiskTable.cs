@@ -1,7 +1,7 @@
 ﻿using System.Collections.Frozen;
 using System.Text.Json;
 
-namespace rinha_backend_csharp_2026.transactions.services
+namespace rinha_backend_csharp_2026.transactions.services.dataset
 {
     public class MccRiskTable(FrozenDictionary<string, float> table)
     {

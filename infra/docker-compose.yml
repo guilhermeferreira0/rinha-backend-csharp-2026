@@ -12,7 +12,7 @@ x-service-templates:
       resources:
         limits:
           cpus: "0.45"
-          memory: "405MB" # recommend: 165MB
+          memory: "165MB" # recommend: 165MB
 
 services:
   transaction-processor-1:

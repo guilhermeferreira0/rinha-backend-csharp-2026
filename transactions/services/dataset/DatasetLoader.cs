@@ -1,4 +1,5 @@
 ﻿using rinha_backend_csharp_2026.transactions.models;
+using rinha_backend_csharp_2026.transactions.services.dataset;
 using System.Collections.Frozen;
 using System.IO.Compression;
 using System.Text.Json;
@@ -49,7 +50,7 @@ namespace rinha_backend_csharp_2026.transactions.services.Dataset
                 i++;
             };
 
-            return new DatasetStore(vectors, labels);
+            return new DatasetStore(vectors, labels, i);
         }
 
         public MccRiskTable LoadMccRisk(string path)

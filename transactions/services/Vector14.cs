@@ -5,19 +5,26 @@ namespace rinha_backend_csharp_2026.transactions.services
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Vector14
     {
-        public float V0;
-        public float V1;
-        public float V2;
-        public float V3;
-        public float V4;
-        public float V5;
-        public float V6;
-        public float V7;
-        public float V8;
-        public float V9;
-        public float V10;
-        public float V11;
-        public float V12;
-        public float V13;
+        public Half V0;
+        public Half V1;
+        public Half V2;
+        public Half V3;
+        public Half V4;
+        public Half V5;
+        public Half V6;
+        public Half V7;
+        public Half V8;
+        public Half V9;
+        public Half V10;
+        public Half V11;
+        public Half V12;
+        public Half V13;
+
+        public override string ToString()
+        {
+            return
+                $"[{V0}, {V1}, {V2}, {V3}, {V4}, {V5}, {V6}, " +
+                $"{V7}, {V8}, {V9}, {V10}, {V11}, {V12}, {V13}]";
+        }
     }
 }

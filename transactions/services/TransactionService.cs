@@ -5,17 +5,17 @@ namespace rinha_backend_csharp_2026.transactions.services
 {
     public class TransactionService(
         VectorBuilder vectorBuilder,
-        KnnSearchService knnSearchService)
+        VectorSearch vectorSearch)
     {
         private readonly VectorBuilder _vectorBuilder = vectorBuilder;
-        private readonly KnnSearchService _knnSearchService = knnSearchService;
+        private readonly VectorSearch _vectorSearch = vectorSearch;
 
-        public FraudResult Process(TransactionRequest request, CancellationToken cancellationToken)
+        public TransactionResponse Process(TransactionRequest request, CancellationToken cancellationToken)
         {
             var vector = _vectorBuilder.Build(request);
-            var fraudScore = _knnSearchService.SearchFraudScore(vector);
+            var fraudScore = _vectorSearch.SearchFraudScore(vector);
 
-            var response = new FraudResult()
+            var response = new TransactionResponse()
             {
                 Approved = fraudScore < 0.6f,
                 FraudScore = fraudScore

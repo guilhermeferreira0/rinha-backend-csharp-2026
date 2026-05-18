@@ -1,4 +1,3 @@
-using rinha_backend_csharp_2026.transactions;
 using rinha_backend_csharp_2026.transactions.models;
 using rinha_backend_csharp_2026.transactions.services;
 using rinha_backend_csharp_2026.transactions.services.Dataset;
@@ -13,8 +12,11 @@ builder.Services.ConfigureHttpJsonOptions(opt =>
     opt.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
 });
 
-var mccRiskTablePath = Path.Combine(Directory.GetCurrentDirectory(), "resources", "mcc_risk.json");
-var referencesPath = Path.Combine(Directory.GetCurrentDirectory(),"resources", "references.json.gz");
+var resourcesPath = Environment.GetEnvironmentVariable("RESOURCES_PATH")
+    ?? Path.Combine(builder.Environment.ContentRootPath, "resources");
+
+var mccRiskTablePath = Path.Combine(resourcesPath, "mcc_risk.json");
+var referencesPath = Path.Combine(resourcesPath, "references.json.gz");
 
 var datasetLoader = new DatasetLoader();
 var datasetStore = await datasetLoader.LoadReference(referencesPath);
@@ -23,7 +25,7 @@ var mccRiskTable = datasetLoader.LoadMccRisk(mccRiskTablePath);
 builder.Services.AddSingleton(mccRiskTable);
 builder.Services.AddSingleton(datasetStore);
 builder.Services.AddScoped<VectorBuilder>();
-builder.Services.AddScoped<KnnSearchService>();
+builder.Services.AddScoped<VectorSearch>();
 builder.Services.AddScoped<TransactionService>();
 
 var app = builder.Build();
@@ -44,7 +46,7 @@ await app.RunAsync();
 [JsonSerializable(typeof(Transaction))]
 [JsonSerializable(typeof(List<Transaction>))]
 [JsonSerializable(typeof(TransactionRequest))]
-[JsonSerializable(typeof(FraudResult))]
+[JsonSerializable(typeof(TransactionResponse))]
 [JsonSerializable(typeof(List<ReferenceDatasetItem>))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {
