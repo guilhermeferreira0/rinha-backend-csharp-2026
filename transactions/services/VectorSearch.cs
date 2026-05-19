@@ -20,49 +20,44 @@ namespace rinha_backend_csharp_2026.transactions.services
             for (int i = 0; i < 5; i++)
             {
                 var vector = top[i];
-                Console.WriteLine(@$"
-TOP{i} Dist={vector.Distance}
-TOP{i} Index={vector.Index}
-");
                 if (vector.Index >= 0) frauds += labels[vector.Index];
             }
 
-            Console.WriteLine($"Frauds={frauds}");
-            Console.WriteLine($"Score={frauds / 5f}");
             return frauds / 5f;
         }
 
         private SearchResult[] GetTop5(Vector14 current)
         {
-            SearchResult[] top =
-            [
-                new(distance: float.MaxValue),
-                new(distance: float.MaxValue),
-                new(distance: float.MaxValue),
-                new(distance: float.MaxValue),
-                new(distance: float.MaxValue)
-            ];
+            Span<SearchResult> top = stackalloc SearchResult[5];
+
+            for (int i = 0; i < 5; i++)
+            {
+                top[i] = new SearchResult(float.MaxValue, -1);
+            }
 
             var vectors = _datasetStore.Vectors;
 
-            for (int i = 0; i < _datasetStore.Count; i++)
+            for (int i = 0; i < 500_000; i++)
             {
-                float dist = VectorCalculator.DistanceSquared(current, vectors[i]);
+                float dist =
+                    VectorCalculator.DistanceSquared(current, vectors[i]);
 
-                if (dist >= top[4].Distance) continue;
+                if (dist >= top[4].Distance)
+                    continue;
 
-                top[4] = new SearchResult(distance: dist, index: i);
+                top[4] = new SearchResult(dist, i);
 
                 for (int j = 4; j > 0; j--)
                 {
                     if (top[j].Distance < top[j - 1].Distance)
                     {
-                        (top[j], top[j - 1]) = (top[j - 1], top[j]);
+                        (top[j], top[j - 1]) =
+                            (top[j - 1], top[j]);
                     }
                 }
             }
 
-            return top; 
+            return top.ToArray();
         }
     }
 }

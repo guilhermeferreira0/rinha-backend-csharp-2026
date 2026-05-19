@@ -9,7 +9,7 @@
 
 	<PublishAot>true</PublishAot>
 	<SelfContained>true</SelfContained>
-	<RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>
+	<!--<RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>-->
 	<InvariantGlobalization>true</InvariantGlobalization>
 	<PublishTrimmed>true</PublishTrimmed>
 	<OptimizationPreference>Speed</OptimizationPreference>
